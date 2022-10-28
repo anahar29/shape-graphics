@@ -1,0 +1,104 @@
+##
+# @ Alisha M.
+
+## Pygame setup
+import pygame
+import random
+
+pygame.init()
+size = (800, 600)
+screen = pygame.display.set_mode(size)
+pygame.display.set_caption("My Game")
+
+## MODEL - Data use in system
+# Define some colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+
+# classes 
+
+class Rectangle():
+    x = 0
+    y = 0
+    width = 10
+    height = 10
+    change_x = 2
+    change_y = 2
+    color = [0, 0, 0]
+
+    def __init__(self):
+        self.x = random.randrange(0, 700)
+        self.y = random.randrange(0, 500)
+        self.change_x = random.randrange(-3., 3)
+        self.change_y = random.randrange(-3., 3)
+        self.width = random.randrange(20, 70)
+        self.height = random.randrange(20, 70)
+        self.color = [0, 0, 0]
+        self.color = [random.randrange(0, 256) for _ in range(3)]
+
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, [self.x, self.y, self.width, self.height], 0)
+
+    def move(self):
+        if self.x < 0:
+            self.change_x *= -1
+        if self.x > 700-self.width:
+            self.change_x *= -1
+        if self.y < 0:
+            self.change_y *= -1
+        if self.y > 500-self.height:
+            self.change_y *= -1
+        self.x += self.change_x
+        self.y += self.change_y
+
+# child class (ellipse shape)
+class Ellipse(Rectangle):
+    def draw(self, screen):
+        pygame.draw.ellipse(screen, self.color, [self.x, self.y, self.width, self.height], 0)
+
+      
+# Loop until the user clicks the close button.
+done = False
+
+# Used to manage how fast the screen updates
+clock = pygame.time.Clock()
+      
+my_list = []
+
+# rectangle loop
+for i in range(50):
+    my_list.append(Rectangle())
+
+# ellipse loop
+for i in range(50):
+    my_list.append(Ellipse())
+
+## Main Program Loop
+while not done:
+  
+    ## CONTROL
+
+    # Check for events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+          
+
+    ## VIEW
+    # Clear screen
+    screen.fill(BLACK)
+
+    for shape in my_list:
+        shape.draw(screen)
+        shape.move()
+
+    # Update Screen
+    pygame.display.flip()
+    clock.tick(60)
+
+# Close the window and quit
+pygame.quit()
